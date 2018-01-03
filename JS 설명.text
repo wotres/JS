@@ -27,7 +27,7 @@ uglifyjs pretty.js -o pretty.min.js -m : 코드 최소화
 npm install underscore --save
 --save 추가하면 디펜던시 추가
 
-npm 패키지로 초기화 npm init
+npm 패키지로 초기화 npm init -> package.json 생성됨
 
 a =[3,1,2]; function b(v1, v2){return v2-v1}; a.sort(b); console.log(a);
 여기서 b함수가 callback함수임 : 누군가에게 호출당할 함수
@@ -37,3 +37,24 @@ a =[3,1,2]; function b(v1, v2){return v2-v1}; a.sort(b); console.log(a);
 
 동기 : 앞에꺼 기다림(하나씩)
 비동기 : 위임 후 동시완료
+
+express 모듈 :
+get 메소드는 라우팅으로 해당 경로에 따른 값을 응답 매칭 시켜줌
+
+// 정적인 파일이 저장될 위치 -> 바로 호출 가능
+app.use(express.static('public'));
+
+쿼리스트링
+http://a.com/topic?id=3
+// id=3 이 queryString
+구분자로 & 사용
+? 다음 나옴
+
+symantic url : ?id=2 이런식으로 말고 바로 /2 이런식으로 깔끔하게
+-> app.get('/topic/:id', 와 같은식으로 바꿔야함
+
+post : get과는 달리 사용자 정보를 숨겨 넘김
+ex) 비번 같은것
+    너무나도 긴 글자 -> 끊김 위험 존재
+
+supervisor -> 자동으로 변경사항 저장 및 로딩
