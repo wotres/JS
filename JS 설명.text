@@ -1,0 +1,39 @@
+자바스크립트
+구글 V8 엔진을 통해 웹뿐만 아니라 다른 분야에서도 사용가능
+웹브라우저 : 언어라는 자바스크립트
+nodejs차이 : 런타임
+ex) alert("hello world")는 웹에서만 사용 -> 단지 언어일뿐 / 노드에서는 사용 불가
+
+클라이언트 서버(도메인은 그냥 이름 : 실제로는 IP주소를 통해 접속)
+포트 : 65535 포트가 있음, 어떠한 포트를 바라보게 함(listen) 기본 : 80번 포트 생략가능(http만 가능)
+
+npm : Node Package Manager
+-> 누군가 만든 모듈 들고 와서 씀
+
+npm install uglify-js -g
+-g 는 독립적으로 사용됨 / 없으면 이 프로젝트에만 사용됨
+
+아래 에러 떨어지는 경우
+Permissions Errors
+Error: EACCES: permission denied, access '/usr/local/lib/node_modules'
+npm ERR!  { Error: EACCES: permission denied, access '/usr/local/lib/node_modules'
+명령어 앞에 sudo 붙여주면됨
+sudo npm install uglify-js -g
+
+uglifyjs :  필수적 코드를 제외한 다른 공백등이 사라짐 -> 용량 절약 효과
+uglifyjs pretty.js -m : 변수값 역시 최소화
+uglifyjs pretty.js -o pretty.min.js -m : 코드 최소화
+
+npm install underscore --save
+--save 추가하면 디펜던시 추가
+
+npm 패키지로 초기화 npm init
+
+a =[3,1,2]; function b(v1, v2){return v2-v1}; a.sort(b); console.log(a);
+여기서 b함수가 callback함수임 : 누군가에게 호출당할 함수
+
+동기(Synchronous) 비동기(Asynchronous)
+싱크 어싱크
+
+동기 : 앞에꺼 기다림(하나씩)
+비동기 : 위임 후 동시완료
