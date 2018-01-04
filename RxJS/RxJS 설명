@@ -1,0 +1,188 @@
+타입스크립트
+앵귤러 선수 들어야함
+rxjs 설치
+
+1초에 한번씩 클릭되게 함
+----
+ngOnInit(){
+  let button  = document.querySelector('button');
+  button.addEventListener('click', () => console.log("YO,bro, clicked me!"))
+  let count : number = 0;
+  let rate : number = 1000; // 1초
+  let lastClick: number = Date,now() - rate;
+  let button = document.querySelector('button');
+  button.addEventListener('click',()=>{
+    if(Date.now() - lastClick >= rate){
+      console.log(count++);
+      lastClick = Date.now();
+    }
+  })
+}
+==>
+observable(가긴갈껀데 언제갈지 모름 기다려야함) 으로 치환 가능
+그 다음 수행하는 메소드는 subscribe
+메소드 사용할때마다 필요한거만 아래처럼 가져다씀 -> 다가져와도 되는데 무거워짐
+겁나 짧아짐
+import 'rxjs/add/observable/fromEvent';
+import 'rxjs/add/operator/throttleTime;
+
+ngOnInit(){
+  Observable.fromEvent(button, 'click')
+    .throttleTime(1000)
+    .subscribe(
+      (event) => console.log(event)
+    )
+}
+----
+
+Observable (Data Provider)(데이터 제공하는 Object)
+<-> Observer(Subscriber)(데이터 받는 Object)
+
+m:m 관계
+
+Observer는 3개의 function 필요
+next()  / error() / complete()
+next()를 통해서 새로운 정보를 Observable이 전달(Observer인 user가 아니라 특정 사이트등의 Observable이 행동 호출)
+subscribe()를 호출
+
+---1
+ngOnInit(){
+  // observer는 아래 3가지 펑션 있어야함
+  let observer = {
+    next: function(value){
+      console.log(value);
+    },
+    error:function(error){
+      console.l,og(error);
+    },
+    complete: function(){
+      console.log('Finished');
+    }
+  }
+  let button = document.querySelector('button');
+  // Observable
+  // Observable.fromEvent(button, 'click')
+  // functional declaration
+  // 무조건 자동으로 실행
+  Observable.create(function(obj){
+    // 자동으로 호출
+    // 동기는 동기 대로 비동기는 비동기 대로 호출
+    obs.next('some value1');
+    setTimeout(function(){
+      obs.next('some value2');
+      obs.error('some error');
+    },2000)
+    obs.complete('finished');
+
+    button.onclick = function(){
+      obs.next(event);
+    }
+  })
+    .subscribe(
+      //  Observer : Function or object
+      // (event) => console.log("Clicked")
+      observer
+    )
+}
+
+---2
+import 'rxjs/add/observable/interval;
+import 'rxjs/add/operator/map;
+import 'rxjs/add/operator/throttleTime;
+
+ngOnInit(){
+  // observer는 아래 3가지 펑션 있어야함
+  let observer = {
+    next: function(value){
+      console.log(value);
+    },
+    error:function(error){
+      console.l,og(error);
+    },
+    complete: function(){
+      console.log('Finished');
+    }
+  }
+  let button = document.querySelector('button');
+  // 매초 표시
+  Observable.interval(1000).subscribe(observer){
+  }
+
+  Observable.interval(1000).map(function(value){
+    return value*2;
+  })
+  .throttleTime(2000)
+  .subscribe(observer)
+}
+
+throttleTime을 통해 데이터 날림
+즉 중간단계를 거치면서 데이터 전달 사라지고 원하는 데이터 혹은 조건에 맞는 데이터만 살아남을 수 있음
+Observable.a1b2.a2b3.subscribe(b4);
+
+---3
+import {Subject} from 'rxjs/Subject';
+export class RxjsTurorialComponent implements OnInit{
+  mySubscription: any;
+  onStart(){
+    // observer는 아래 3가지 펑션 있어야함
+    let observer = {
+      next: function(value){
+        console.log(value);
+      },
+      error:function(error){
+        console.l,og(error);
+      },
+      complete: function(){
+        console.log('Finished');
+      }
+    }
+    let button = document.querySelector('button');
+    // 매초 표시
+    Observable.interval(1000).subscribe(observer){
+    }
+    // 참이면 통과 거짓이면 안통과 -> 필터
+    this.mySubscripttion = Observable.interval(1000).filter(function(value){
+      return value%2 ==0;
+    })
+    .subscribe(observer)
+
+    //this.mySubscription()
+  }
+
+  onStop(){
+    this.mysubscription.unsubscribe();
+  }
+
+
+  onSubject(){
+    let subject = new Subject();
+    subject.subscribe({
+      next: function(value){
+        console.log(value);
+      },
+      error:function(error){
+        console.l,og(error);
+      },
+      complete: function(){
+        console.log('Finished');
+      }
+    });
+    subject.next('Data requested');
+  }
+  // debounceTime : 시간 지난뒤 작동
+  //
+  onInput(event){
+    Observable.fromEvent(event.target,'input')
+    .pluck('target', 'value')
+    .debounceTime(300)
+    .distinctUntilChanged()
+    .subscribe({
+      next: function(){
+        console.log(event.target.value)
+      }
+    })
+  }
+}
+
+// 원래는 this.mySubscription() 이런식으로 해야 동작하는데 없어도 이미 start가 유지되어 작동됨
+// filter
