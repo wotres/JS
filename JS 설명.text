@@ -58,3 +58,4 @@ ex) 비번 같은것
     너무나도 긴 글자 -> 끊김 위험 존재
 
 supervisor -> 자동으로 변경사항 저장 및 로딩
+sudo npm install supervisor -g
