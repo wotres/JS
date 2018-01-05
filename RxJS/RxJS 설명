@@ -1,6 +1,7 @@
 타입스크립트
 앵귤러 선수 들어야함
 rxjs 설치
+npm install rxjs
 
 1초에 한번씩 클릭되게 함
 ----
@@ -161,7 +162,7 @@ export class RxjsTurorialComponent implements OnInit{
         console.log(value);
       },
       error:function(error){
-        console.l,og(error);
+        console.log(error);
       },
       complete: function(){
         console.log('Finished');
@@ -182,7 +183,237 @@ export class RxjsTurorialComponent implements OnInit{
       }
     })
   }
+  // reduce : 각단계별로 변화하는 값 사용 편함 / scan
+  onReduce(){
+    Observable.of(1,2,3,4,5)
+      .reduce((total, currentValue) => {
+        return total + currentValue;
+      }, 0)
+      .subscribe({
+        next: function(value){
+          console.log(value);
+        }
+      })
+  }
+  onClick(){
+    let obs1: Observable<number> = Observable.create(obs => obs.next())
+    let obs2: Observable<number> = Observable.interval(1000);
+
+    obs1.subscribe(
+      e => {
+        //  Using another Observable, obs2
+        obs2.subscribe(
+          (value) => console.log(value))
+          // (value) => {event => obs3.subscribe()}
+    }
+  }
 }
 
 // 원래는 this.mySubscription() 이런식으로 해야 동작하는데 없어도 이미 start가 유지되어 작동됨
 // filter
+---4
+tutorial.js
+
+const button = document.querySelector('button');
+
+function logClick(x) {
+  console.log('clicked! ${x.x}');
+  const arr = [10,20,30,40,50,60];
+  arr.forEach((x) => {
+    console.log(x);
+  });
+
+}
+
+---5
+const res = fetch(
+  'http://jsonplaceholder.typicode.com/users'
+).then(res => res.json());
+)
+
+function successCallback(value){
+  console.log('we got back ${value}');
+}
+
+function failureCallback(value){
+  console.log(':( ${err}');
+};
+res.then(successCallback, failureCallback);
+
+---6
+const readable = getReadableStreamSomehow();
+
+function nextDataCallback(chunk){
+  console.log('Received ${chunk.length} byes of code');
+};
+
+function errorDataCallback(err){
+  console.log('Bad stuff happened: ${error}');
+}
+
+function doneDataCallback(){
+  console.log('There will be no more data');
+}
+
+readable.on('data', nextDataCallback);
+readable.on('error', errorDataCallback);
+readable.on('end', doneDataCallback);
+
+==>
+function nextCallback(data){
+  console.log('we received ${data.length} bytes of data');
+}
+
+function errorDataCallback(err){
+  console.log('Bad stuff happened: ${error}');
+}
+
+function doneDataCallback(){
+  console.log('finished!');
+}
+
+function giveMeSomeData(nextcb, errorcb, completecb){
+  [10,20,30].forEach(nextCB);
+}
+giveMeSomeData(
+  nextCallback,
+  errorCallback,
+  completeCallback
+);
+--> 7
+const observer ={
+
+  next : function(data){
+    console.log(data);
+  },
+  error: function(data){
+    console.log(error);
+  },
+  complete: function(){
+    console.log('finished');
+  }
+
+  const observable = {
+    subscribe: function(ob){
+      [10,20,30].forEach(x => ob.next(x));
+    }
+  }
+  observable.subscribe(observer)
+}
+---8
+function map(transformFn){
+  const inputObservable = this;
+  const outputObservable = createObservable(function(outputObserver){
+    inputObservable.subscribe({
+      next: function(){
+        const y = transformFn(x); // 20 --> 2
+        outputObserver.next(y); // 2
+      },
+      error : e => outputObserver.error(e),
+      complete: () => outputObserver.complete('finished')
+    })
+  })
+  return outputObservable;
+}
+const createObservable = function(subscribe){
+    return {
+      subscribe: sub,
+      map: map
+    }
+}
+
+const observer = {
+  next: data => console.log(data),
+  next: error => console.log(error),
+  complete: ()) => console.log('finished')
+}
+
+const arrayObservable = createObservable(function(ob){
+    [10, 20, 30].forEach(ob.next);
+});
+console.log(arrayObservable.subscribe(observer));
+
+const clickObservable = createObservable(function(ob){
+    document.addEventListener('click', ob.next)
+});
+
+console.log(arrayObservable
+  .map(x => x*10)
+  .subscribe(observer));
+observable
+  .map(x=>x/10)
+  .filter(x => x%2 ===0)
+  .subscribe(observer)
+
+---9
+filter function
+
+
+function map(transformFn){
+  const inputObservable = this;
+  const outputObservable = createObservable(function(outputObserver){
+    inputObservable.subscribe({
+      next: function(){
+        const y = transformFn(x); // 20 --> 2
+        outputObserver.next(y); // 2
+      },
+      error : e => outputObserver.error(e),
+      complete: () => outputObserver.complete('finished')
+    })
+  })
+  return outputObservable;
+}
+const createObservable = function(subscribe){
+    return {
+      subscribe: sub,
+      map: map,
+      filter: filter
+    }
+}
+
+function filter(conditionFn){
+  const inputObservable = this;
+  const outputObservable = createObservable(function(outputObserver){
+    inputObservable.subscribe({
+      next: function(){
+        if(conditionFn(x)){
+          outputObserver.next(x);
+        }
+      },
+      error : e => outputObserver.error(e),
+      complete: () => outputObserver.complete('finished')
+    })
+  })
+  return outputObservable;
+}
+const createObservable = function(subscribe){
+    return {
+      subscribe: sub,
+      map: map
+    }
+}
+
+const observer = {
+  next: data => console.log(data),
+  next: error => console.log(error),
+  complete: ()) => console.log('finished')
+}
+
+const arrayObservable = createObservable(function(ob){
+    [10, 20, 30].forEach(ob.next);
+});
+console.log(arrayObservable.subscribe(observer));
+
+const clickObservable = createObservable(function(ob){
+    document.addEventListener('click', ob.next)
+});
+
+console.log(arrayObservable
+  .map(x => x*10)
+  .filter(x => x%3 !==0)
+  .subscribe(observer));
+
+observable
+  .map(x=>x/10)
+  .filter(x => x%2 ===0)
+  .subscribe(observer)
