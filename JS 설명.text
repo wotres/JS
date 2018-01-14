@@ -59,3 +59,27 @@ ex) 비번 같은것
 
 supervisor -> 자동으로 변경사항 저장 및 로딩
 sudo npm install supervisor -g
+
+관계형 데이터 베이스 : 오라클, 마이SQL, SQL서버
+NoSQL : NOt ONly SQL -> 다양한 데이터 베이스를 다룸
+mysql -uroot -p
+
+create database o2
+show databases;
+use o2;
+CREATE TABLE `topic` (
+`id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) NOT NULL,
+  `description` text NOT NULL,
+  `author` varchar(30) NOT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+show tabels;
+
+INSERT INTO topic (title, description, author) VALUES('JavaScript','Computer language for web.', 'egoing');
+INSERT INTO topic (title, description, author) VALUES('NPM','Package manager', 'leezche');
+
+select * from topic where id=2;
+update topic set title='npm' where id=2;
+delete from topic where id=2;
