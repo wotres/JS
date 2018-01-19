@@ -1,7 +1,6 @@
-//http://127.0.0.1:10500/parse?query=Add 버튼을 클릭한다.
 const fs = require('fs')
 const axios = require('axios')
-const fileString = fs.readFileSync('hancom2014Texts.txt', 'utf8')
+const fileString = fs.readFileSync('.txt', 'utf8')
 let resultListE1000 = []
 let resultListE2000 = []
 let resultList = []
