@@ -1,63 +1,69 @@
-const fs = require('fs')
 const axios = require('axios')
-const fileString = fs.readFileSync('.txt', 'utf8')
-let resultListE1000 = []
-let resultListE2000 = []
+const fs = require('fs')
+const fileString = fs.readFileSync('test.txt', 'utf8')
+const list = fileString.split('\n')
+
+let resultList = []
+let arr = [];
+
+function getCams(ip) {
+  return axios.get(ip);
+}
+
+function getPresence(cams) {
+  return new Promise((resolve) => {
+    axios.all(cams.map(getCams))
+      .then((responses) => {
+        const { data } = responses
+
+        for (let i = 0; i < list.length; i += 1) {
+          const obj = {
+              message: responses[i].data,
+          }
+          // console.log(responses[i].data)
+          resultList.push(obj)
+          resolve(resultList);
+        }
+      });
+  });
+}
+
+function khan(){
+  for (let i = 0; i < list.length; i += 1) {
+    arr.push('http://localhost:3000')
+  }
+  // console.log(arr)
+  getPresence(arr)
+    .then((data) => {
+      // console.log(data);
+      fs.writeFile('test02.txt', JSON.stringify(data) , function(err){
+        if(err) throw err
+      })
+    });
+}
+khan()
+
+//////
+/*const fs = require('fs')
+const axios = require('axios')
+const fileString = fs.readFileSync('test.txt', 'utf8')
+const list = fileString.split('\n')
+const apiURL = 'http://localhost:3000';
 let resultList = []
 
-async function API_Call(query, index){
-    var OPTIONS = {
-        headers: {'Content-Type': 'application/json'},
-        url: null,
-        body: null
-    }
-    let queryString = encodeURIComponent(query)
-    const PORT = ''
-    const BASE_PATH = '/parse'
-    var HOST = 'http://1111'
+const logPosts = async () => {
+  try {
+    let result = list.map(response => axios(`${apiURL}`));
 
-    let url = HOST + ':' + PORT + BASE_PATH + '?query=' + queryString
+    let weather = await Promise.all(result);
+    weather.forEach(response => {
+      console.log(response.data)
+      resultList.push(response.data)
+    });
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
 
-    await axios.get(url)
-        .then((response) => {
-            const { data } = response
-            const obj = {
-                index,
-                query,
-                message: response.data,
-            }
-            if (data['error code'] === '1000') {
-                resultListE1000.push(obj)
-            } else if (data['error code'] === '2000') {
-                resultListE2000.push(obj)
-            } else {
-                resultList.push(obj)
-            }
-        })
-        .catch(response => console.error(response))
-}
-
-const khan = async () => {
-    const list = fileString.split('\n')
-    const start = Date.now()
-    console.log(start)
-    for (let i = 0; i <= list.length; i += 1) {
-        if (list[i]) {
-            await API_Call(list[i],i)
-        }
-    }
-    const end = Date.now()
-    console.log('takes... ' + (end - start))
-
-    fs.writeFile('resultListE1000.txt', JSON.stringify(resultListE1000) , function(err){
-        if(err) throw err
-    })
-    fs.writeFile('resultListE2000.txt', JSON.stringify(resultListE2000) , function(err){
-        if(err) throw err
-    })
-    fs.writeFile('resultList.txt', JSON.stringify(resultList) , function(err){
-        if(err) throw err
-    })
-}
-
-khan()
+logPosts();
+*/
